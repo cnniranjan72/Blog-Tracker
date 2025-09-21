@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Switch } from '../components/ui/switch';
+import { Badge } from '../components/ui/badge';
 import MDEditor from '@uiw/react-md-editor';
 import { Save, ArrowLeft, Plus, X, Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { api } from '@/lib/api';
-import { useToast } from '@/hooks/use-toast';
+import { api } from '../lib/api';
+import { useToast } from '../hooks/use-toast';
 
 const CreateBlog = () => {
   const [title, setTitle] = useState('');

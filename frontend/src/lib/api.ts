@@ -1,14 +1,15 @@
-import { Blog, CreateBlogRequest, UpdateBlogRequest } from '@/types/blog';
+// src/lib/api.ts
+import type { Blog, CreateBlogRequest, UpdateBlogRequest } from '../types/blog';
 
 // Mock API base URL - replace with your actual FastAPI backend URL
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-fastapi-backend.onrender.com' 
-  : 'http://localhost:8000';
+const API_BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://your-fastapi-backend.onrender.com'
+    : 'http://localhost:8000';
 
 // Get Firebase ID token for authenticated requests
 const getAuthToken = async () => {
-  // This will be implemented when Firebase auth is set up
-  return localStorage.getItem('mockAuthToken') || '';
+  return localStorage.getItem('idToken') || '';
 };
 
 // Mock data for development
@@ -33,11 +34,11 @@ Today I started my software engineering internship at TechCorp. The onboarding p
     authorId: 'user1',
     author: {
       displayName: 'John Doe',
-      email: 'john@example.com'
+      email: 'john@example.com',
     },
-    createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-15'),
-    isPublic: true
+    createdAt: new Date('2024-01-15T00:00:00.000Z'),
+    updatedAt: new Date('2024-01-15T00:00:00.000Z'),
+    isPublic: true,
   },
   {
     _id: '2',
@@ -56,39 +57,36 @@ The senior developers here are really helpful in code reviews!`,
     authorId: 'user1',
     author: {
       displayName: 'John Doe',
-      email: 'john@example.com'
+      email: 'john@example.com',
     },
-    createdAt: new Date('2024-01-22'),
-    updatedAt: new Date('2024-01-22'),
-    isPublic: true
-  }
+    createdAt: new Date('2024-01-22T00:00:00.000Z'),
+    updatedAt: new Date('2024-01-22T00:00:00.000Z'),
+    isPublic: true,
+  },
 ];
 
 export const api = {
-  // Get all public blogs
   getPublicBlogs: async (): Promise<Blog[]> => {
     try {
-      // In production, this would be:
-      // const response = await fetch(`${API_BASE_URL}/blogs`);
+      // Production fetch example:
+      // const response = await fetch(`${API_BASE_URL}/blogs/public`);
       // return response.json();
-      
-      // Mock implementation
+
       return mockBlogs.filter(blog => blog.isPublic);
     } catch (error) {
-      console.error('Error fetching blogs:', error);
-      throw new Error('Failed to fetch blogs');
+      console.error('Error fetching public blogs:', error);
+      throw new Error('Failed to fetch public blogs');
     }
   },
 
-  // Get user's blogs
   getUserBlogs: async (): Promise<Blog[]> => {
     try {
       const token = await getAuthToken();
-      // const response = await fetch(`${API_BASE_URL}/blogs/mine`, {
-      //   headers: { Authorization: `Bearer ${token}` }
+      // const response = await fetch(`${API_BASE_URL}/blogs/me`, {
+      //   headers: { Authorization: `Bearer ${token}` },
       // });
-      
-      // Mock implementation
+      // return response.json();
+
       return mockBlogs;
     } catch (error) {
       console.error('Error fetching user blogs:', error);
@@ -96,12 +94,8 @@ export const api = {
     }
   },
 
-  // Get single blog
   getBlog: async (id: string): Promise<Blog> => {
     try {
-      // const response = await fetch(`${API_BASE_URL}/blogs/${id}`);
-      
-      // Mock implementation
       const blog = mockBlogs.find(b => b._id === id);
       if (!blog) throw new Error('Blog not found');
       return blog;
@@ -111,30 +105,30 @@ export const api = {
     }
   },
 
-  // Create blog
   createBlog: async (blogData: CreateBlogRequest): Promise<Blog> => {
     try {
       const token = await getAuthToken();
+      // Production example:
       // const response = await fetch(`${API_BASE_URL}/blogs`, {
       //   method: 'POST',
       //   headers: {
       //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${token}`
+      //     Authorization: `Bearer ${token}`,
       //   },
-      //   body: JSON.stringify(blogData)
+      //   body: JSON.stringify(blogData),
       // });
-      
-      // Mock implementation
+
       const newBlog: Blog = {
         _id: Date.now().toString(),
         ...blogData,
         authorId: 'user1',
         author: {
           displayName: 'John Doe',
-          email: 'john@example.com'
+          email: 'john@example.com',
         },
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        isPublic: blogData.isPublic ?? true,
       };
       mockBlogs.unshift(newBlog);
       return newBlog;
@@ -144,27 +138,16 @@ export const api = {
     }
   },
 
-  // Update blog
   updateBlog: async (blogData: UpdateBlogRequest): Promise<Blog> => {
     try {
       const token = await getAuthToken();
-      // const response = await fetch(`${API_BASE_URL}/blogs/${blogData._id}`, {
-      //   method: 'PUT',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${token}`
-      //   },
-      //   body: JSON.stringify(blogData)
-      // });
-      
-      // Mock implementation
       const index = mockBlogs.findIndex(b => b._id === blogData._id);
       if (index === -1) throw new Error('Blog not found');
-      
-      const updatedBlog = {
+
+      const updatedBlog: Blog = {
         ...mockBlogs[index],
         ...blogData,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
       mockBlogs[index] = updatedBlog;
       return updatedBlog;
@@ -174,23 +157,14 @@ export const api = {
     }
   },
 
-  // Delete blog
   deleteBlog: async (id: string): Promise<void> => {
     try {
       const token = await getAuthToken();
-      // await fetch(`${API_BASE_URL}/blogs/${id}`, {
-      //   method: 'DELETE',
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-      
-      // Mock implementation
       const index = mockBlogs.findIndex(b => b._id === id);
-      if (index !== -1) {
-        mockBlogs.splice(index, 1);
-      }
+      if (index !== -1) mockBlogs.splice(index, 1);
     } catch (error) {
       console.error('Error deleting blog:', error);
       throw new Error('Failed to delete blog');
     }
-  }
+  },
 };

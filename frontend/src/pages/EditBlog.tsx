@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Switch } from '../components/ui/switch';
+import { Badge } from '../components/ui/badge';
 import MDEditor from '@uiw/react-md-editor';
 import { Save, ArrowLeft, Plus, X, Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { api } from '@/lib/api';
-import { useToast } from '@/hooks/use-toast';
-import { Blog } from '@/types/blog';
+import { api } from '../lib/api';
+import { useToast } from '../hooks/use-toast';
+import type { Blog } from '../types/blog';
 
 const EditBlog = () => {
   const { id } = useParams<{ id: string }>();
